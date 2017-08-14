@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+	<head>
+    	<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+		<title>Sound App</title>
+		<script type="text/javascript" src="chroma.js"></script>
+		<script type="text/javascript" src="myJavaScript.js"></script>
+		
+		<style>
+			.navigations {
+				float: left;
+				width: 25%;
+				border: 3px solid #73AD21;
+			}		
+			.visual {
+				display: inline-block;
+				width: 49%;			
+				border: 3px solid #73AD21;
+			}			
+			.info{
+				 float: right;		
+				 width: 24%;
+				 border: 3px solid #73AD21;			
+			}		
+		</style>
+	</head>
+
+	<body>
+		<div class="navigations">
+			<div class="playSound" id="play" style="background-color: #ffb366; padding-left: 5px;">		
+				<h3> Load Sound </h3>
+				<input type="file" id="files" name="files[]" multiple /><br><br>		
+				<input id="button1" type="button" name="button1" value="Play sound" onClick="playSound(soundBuffer)"> <br><br>		
+				<input id="button2" type="button" name="button2" value="Stop sound" onClick="stopSound()"><br><br>				   
+				<label for="volume"> Volume: </label>
+				<input id="volume" type="range" min="0" max="1" step="0.1" value="0.5"/>
+				
+				<br><br><hr>
+			</div>
+		
+			<div class="oscillators" style="background-color:  #b3ff66; padding-left: 5px;">
+				<h3>Synthesis</h3>
+				<div id="oscillator1">
+                    <label for="sWaves"> Sound Wave 1 </label>				
+					<input id="button3" type="button" name="button3" value="Play sound" onClick ="playOscillator1()"> 
+					<input id="button4" type="button" name="button4" value="Stop sound" onClick="stopOscillator1()"> <br><br>
+							   
+					<label for ="volume1"> Volume </label>
+					<input id="volume1" type="range" min="0" max="1" step="0.1"  value="0.2"/><br>
+			
+					<label for="detune1"> Detune: </label>
+					<input id="detune1" type="range" min="-100" max="100" step="5" value="0"><br>
+		  
+					<div class="synthesis">
+						<label for="pitch1"> Hertz </label>  
+						<input id="pitch1" type="range" min="20" max="2000" step="1"  value="440"  onchange="showValue1(this.value)"/><br>		
+						<input type="text"  id="freq1" name="freq1"  value="440" />
+					</div>	
+						
+					<div class="radio1">	   	
+						<input type="radio"  name="waveform1" value="sine" checked> Sine			
+						<input type="radio"  name="waveform1" value="square"> Square  	
+						<input type="radio"  name="waveform1" value="sawtooth"> Sawtooth		    	
+						<input type="radio"  name="waveform1" value="triangle"> Triangle
+					</div><br><hr>				
+			</div> 
+		
+			<div id="oscillator2" style="padding-left: 5px;">
+				<label for="sWaves"> Sound Wave 2 </label>	
+				<input id="button5" type="button" name="button5" value="Play sound" onClick ="playOscillator2()">
+				<input id="button6" type="button" name="button6" value="Stop sound" onClick="stopOscillator2()"><br><br>
+							   
+				<label for ="volume2"> Volume </label>
+				<input id="volume2" type="range" min="0" max="1" step="0.1"  value="0.2"/><br>
+			
+				<label for="detune2"> Detune: </label>
+				<input id="detune2" type="range" min="-100" max="100" step ="5" value="0"><br>
+		  
+				<div class="synthesis2">
+					<label for="pitch2"> Hertz </label>  
+					<input id="pitch2" type="range" min="20" max="2000" step="1"  value="200"  onchange="showValue2(this.value)"/><br>
+			        <input type="text"  id="freq2" name="freq2"  value="200" />
+				</div>	
+						
+				<div class="radio2">	   	
+					<input type="radio"  name="waveform2" value="sine"> Sine			
+					<input type="radio"  name="waveform2" value="square" > Square  	
+					<input type="radio"  name="waveform2" value="sawtooth" checked> Sawtooth		    	
+					<input type="radio"  name="waveform2" value="triangle"> Triangle
+				</div>		
+			</div><br><hr>
+			<input id="button7" type="button" name="button2" value="Play All" onClick="playAll()" style="margin-left:25%;">
+			<input id="button8" type="button" name="button8" value="Reset All" onClick="Reset()">
+			<script> function Reset() {location.reload();} </script>
+		</div>		
+	</div> <!-- End div class navigations -->	
+		
+	<div class="visual" style="background-color: #df9; padding-left: 5px;">	
+		<h2> <center> Sound Visualisation </center></h2>
+		<!-- The canvas where we visualise our waveform. -->			
+		<canvas id="canvas" width="640" height="320" style="padding-left: 5px; background-color: #fff;"></canvas>
+		<canvas id="canvas2" width="640" height="320" style="padding-left: 5px;"  ></canvas>			
+	</div> <!-- End div class visual -->	
+							
+	<div  class="info">	
+		 <div class = "filterOptions" style="background-color: #ffb366; padding-left: 5px;">
+			<h3>Filters</h3>
+			<label>Filter type: </label>
+			<select id="filterType" size="1">
+			    <option value="normal" selected > Normal </option>
+				<option value="lowpass"> Lowpass </option>
+				<option value="highpass">Highpass</option>
+				<option value="bandpass" >Bandpass</option>
+				<option value="notch">Notch</option>
+				<option value="lowshelf">Lowshelf</option>
+				<option value="highshelf">Highshelf</option>
+				<option value="peaking">Peaking</option>
+				<option value="allpass">Allpass</option>
+			</select><br><br>
+						
+			<label>Filter frequency: </label>
+				<input id="filter" type="range" min="20" max="5000" step="5" value="2500"/><br>
+	
+			<label>Quality (Q) value: </label>
+				<input id="qValue" type="range" min=".0001" max="1000" step=".0005" value="1"/>
+			<br><br><hr>	   
+		</div>				   		
+			
+		<div class="testing" id="debugInfo" style="background-color: #b3ff66; padding-left: 5px;" >
+			<h3>Testing</h3>		
+		</div>		
+	</div> <!--End div class info -->
+	
+	</body>
+</html> 
